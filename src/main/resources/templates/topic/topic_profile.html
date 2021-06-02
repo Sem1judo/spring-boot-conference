@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+<div class="container-fluid well span6">
+    <div class="row-fluid">
+
+        <div class="span8" th:class="${topic}">
+            <div th:if="${topic}">
+                <h2>Topic : </h2>
+                <h3 th:text="${topic.name}"/>
+                <h3 th:text="${topic.description}"/>
+                <h3 th:text="${topic.event.title}"/>
+                <h3 th:text="${topic.user.firstName}"/>
+                <h3 th:text="${topic.user.lastName}"/>
+                <h5><a th:href="@{/topics}">Back to topics </a></h5>
+            </div>
+        </div>
+        <div th:unless="${topic}">
+            <h3>No such id</h3>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

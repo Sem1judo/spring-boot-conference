@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="fragments/header :: header"></header>
+<h3><a href="/createTopicForm">Add a new topic</a></h3>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Event title</th>
+        <th scope="col">Speaker email</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${topics == null or topics.isEmpty()}">
+        <td colspan="2">No timeSlots Available</td>
+    </tr>
+    <tr th:each="topic : ${topics}">
+        <td th:text="${topic.id}"/>
+        <td><a th:href="@{/topicProfile/{id}(id=${topic.id})}" th:text="${topic.name}"></a></td>
+        <td th:text="${topic.description}"/>
+        <td th:text="${topic.event.title}"/>
+        <td th:text="${topic.user.email}"/>
+        <td><a th:href="@{/editTopic/{id}(id=${topic.id})}">Edit</a></td>
+        <td><a th:href="@{/deleteTopic/{id}(id=${topic.id})}">Delete</a></td>
+    </tr>
+    </tbody>
+</table>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+</html>
+

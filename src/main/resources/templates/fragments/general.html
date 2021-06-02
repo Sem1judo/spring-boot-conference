@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headerfiles">
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link th:href="@{/templates/css/profile_user.css}" rel="stylesheet">
+</head>
+<body>
+
+    <footer th:fragment="footer">
+        <a th:href="@{/fragments}">Fragments Index</a> |
+        <a th:href="@{/markup}">Markup inclussion</a> |
+        <a th:href="@{/params}">Fragment params</a> |
+        <a th:href="@{/other}">Other</a>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+
+<header th:insert="fragments/header :: header"></header>
+
+<form th:action="@{/updateEvent/{id}(id=${event.id})}" th:object="${event}"
+      method="post">
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control"
+               id="title" th:field="*{title}"/>
+        <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Name Error</span>
+    </div>
+    <div class="form-group">
+        <label for="location">location</label>
+        <input type="text" class="form-control"
+               id="location" th:field="*{location}"/>
+        <span th:if="${#fields.hasErrors('location')}" th:errors="*{location}">Name Error</span>
+    </div>
+
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" class="form-control"
+               id="description" th:field="*{description}"/>
+        <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</span>
+    </div>
+
+    <div class="form-group">
+        <label for="startTime">Start Time</label>
+        <input type="text" class="form-control"
+               id="startTime" th:field="*{startTime}"/>
+        <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">Name Error</span>
+    </div>
+
+    <div class="form-group">
+        <label for="endTime">End Time</label>
+        <input type="text" class="form-control"
+               id="endTime" th:field="*{endTime}"/>
+        <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}">Name Error</span>
+
+    </div>
+
+<!--    <div class="form-group">-->
+<!--        <label for="status">End Time</label>-->
+<!--        <input type="text" class="form-control"-->
+<!--               id="status" th:field="*{status}"/>-->
+<!--        <span th:if="${#fields.hasErrors('status')}" th:errors="*{status}">Name Error</span>-->
+<!--    </div>-->
+
+    <div class="form-group">
+        <label for="userId">User ID</label>
+        <input type="number" class="form-control"
+               name="userId" id="userId" th:value="*{organizer.id}"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+</html>
+

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+<div class="container-fluid well span6">
+    <div class="row-fluid">
+
+        <div class="span8" th:class="${event}">
+            <div th:if="${event}">
+                <h2>Event : </h2>
+                <h3 th:text="${event.title}"/>
+                <h3 th:text="${event.description}"/>
+                <h3 th:text="${event.location}"/>
+                <h3 th:text="${#temporals.format(event.startTime, 'dd-MM-yyyy, HH:mm')}"/>
+                <h3 th:text="${#temporals.format(event.endTime, 'dd-MM-yyyy, HH:mm')}"/>
+                <h3 th:text="${event.status}"/>
+                <h3 th:text="${event.organizer.firstName}"/>
+                <h3 th:text="${event.organizer.lastName}"/>
+
+                <h5><a th:href="@{/events}">Back to events </a></h5>
+            </div>
+        </div>
+        <div th:unless="${event}">
+            <h3>No such id</h3>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
