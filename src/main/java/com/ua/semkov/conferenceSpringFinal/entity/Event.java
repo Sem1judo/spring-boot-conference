@@ -72,17 +72,16 @@ public class Event {
     @JoinColumn(name = "organizer_id")
     private User organizer;
 
-
     @Enumerated(EnumType.STRING)
-    private Status status;
+    @Builder.Default
+    private Status status = Status.PLANNED;
 
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "event")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Topic> topics = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "event")
-    @Fetch(value = FetchMode.SUBSELECT)
+    @ManyToMany(mappedBy = "events")
     private List<User> users = new ArrayList<>();
 
 }

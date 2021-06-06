@@ -26,7 +26,7 @@
     <tr th:if="${topics == null or topics.isEmpty()}">
         <td colspan="2">No timeSlots Available</td>
     </tr>
-    <tr th:each="topic : ${topics}">
+    <tr th:each="topic : ${topics}" th:if="${topic.active}">
         <td th:text="${topic.id}"/>
         <td><a th:href="@{/topicProfile/{id}(id=${topic.id})}" th:text="${topic.name}"></a></td>
         <td th:text="${topic.description}"/>

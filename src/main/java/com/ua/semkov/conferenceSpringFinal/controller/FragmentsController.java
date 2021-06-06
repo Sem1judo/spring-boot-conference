@@ -26,9 +26,4 @@ public class FragmentsController {
         return "/fragments/params";
     }
 
-//    @GetMapping("/other")
-//    public String otherPage(Model model) {
-//        // model.addAttribute("data", StudentUtils.buildStudents());
-//        return "other.html";
-//    }
 }

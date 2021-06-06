@@ -3,6 +3,8 @@ package com.ua.semkov.conferenceSpringFinal.service;
 import com.ua.semkov.conferenceSpringFinal.dao.EventRepository;
 import com.ua.semkov.conferenceSpringFinal.dao.UserRepository;
 import com.ua.semkov.conferenceSpringFinal.entity.Event;
+import com.ua.semkov.conferenceSpringFinal.entity.Paged;
+import com.ua.semkov.conferenceSpringFinal.entity.Paging;
 import com.ua.semkov.conferenceSpringFinal.entity.User;
 import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
 import com.ua.semkov.conferenceSpringFinal.validation.ValidatorEntity;
@@ -11,10 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.ejb.NoSuchEntityException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -44,6 +49,13 @@ public class EventService {
             log.error("Failed to get all events", e);
             throw new ServiceException("Failed to get list of events", e);
         }
+    }
+
+    public Paged<Event> getPage(int pageNumber, int size,String fieldSortName) {
+        log.debug("Trying to get pageable events");
+        PageRequest request = PageRequest.of(pageNumber - 1, size, new Sort(Sort.Direction.ASC, fieldSortName));
+        Page<Event> postPage = eventRepository.findAll(request);
+        return new Paged<>(postPage, Paging.of(postPage.getTotalPages(), pageNumber, size));
     }
 
     public void create(Event event, Long userId) {

@@ -47,9 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/events")
                 .failureUrl("/login.html?error=true")
                 //.failureHandler(authenticationFailureHandler())
-                // .and()
-                // .logout()
-                //.logoutUrl("/perform_logout")
+                 .and()
+                 .logout()
+//                .logoutUrl("/perform_logout")
                 //.deleteCookies("JSESSIONID")
                 //.logoutSuccessHandler(logoutSuccessHandler());
                 .permitAll();

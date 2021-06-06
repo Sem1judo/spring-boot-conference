@@ -3,15 +3,16 @@ package com.ua.semkov.conferenceSpringFinal.service;
 import com.ua.semkov.conferenceSpringFinal.dao.EventRepository;
 import com.ua.semkov.conferenceSpringFinal.dao.TopicRepository;
 import com.ua.semkov.conferenceSpringFinal.dao.UserRepository;
-import com.ua.semkov.conferenceSpringFinal.entity.Event;
-import com.ua.semkov.conferenceSpringFinal.entity.Topic;
-import com.ua.semkov.conferenceSpringFinal.entity.User;
+import com.ua.semkov.conferenceSpringFinal.entity.*;
 import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
 import com.ua.semkov.conferenceSpringFinal.validation.ValidatorEntity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,12 @@ public class TopicService {
             log.error("Failed to get all topics", e);
             throw new ServiceException("Failed to get list of topics", e);
         }
+    }
+
+    public Paged<Topic> getPage(int pageNumber, int size) {
+        PageRequest request = PageRequest.of(pageNumber - 1, size, new Sort(Sort.Direction.ASC, "active"));
+        Page<Topic> postPage = topicRepository.findAll(request);
+        return new Paged<>(postPage, Paging.of(postPage.getTotalPages(), pageNumber, size));
     }
 
     public void create(Topic topic, Long userId, Long eventId) {

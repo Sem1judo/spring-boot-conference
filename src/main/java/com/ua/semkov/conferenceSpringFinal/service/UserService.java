@@ -8,8 +8,9 @@ import com.ua.semkov.conferenceSpringFinal.entity.User;
 import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
 import com.ua.semkov.conferenceSpringFinal.validation.ValidatorEntity;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,11 +23,13 @@ import org.springframework.stereotype.Service;
 import javax.ejb.NoSuchEntityException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
 @Service
 @AllArgsConstructor
+@ToString
 public class UserService implements UserDetailsService {
 
     private final ValidatorEntity<User> validator;
@@ -94,7 +97,8 @@ public class UserService implements UserDetailsService {
     }
 
 
-    private static final String MISSING_ID_ERROR_MESSAGE = "Missing id user.";
+    private static final String MISSING_ID_ERROR_MESSAGE = "Missing id user";
+    private static final String MISSING_EMAIL_ERROR_MESSAGE = "Missing email user";
     private static final String NOT_EXIST_ENTITY = "Doesn't exist such user";
 
     public List<User> getAll() {
@@ -122,6 +126,7 @@ public class UserService implements UserDetailsService {
             throw new ServiceException("Failed to create user", e);
         }
     }
+
 
     public void deleteById(long id) {
         log.debug("Trying to delete user with id={}", id);
@@ -158,6 +163,71 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public List<Event> getEventsByUser(User user) {
+        log.debug("Obtained user = {}", user);
+
+        List<Event> events;
+        try {
+            events = eventRepository.findEventsByUsers(user);
+        } catch (DataAccessException e) {
+            log.error("Failed to retrieve events for user {}", user, e);
+            throw new ServiceException("Failed to retrieve events for user ", e);
+        }
+        return events;
+    }
+
+    public boolean isJoinedUserEvent(Event event, User user) {
+        log.debug("Obtained user = {}", user);
+        log.debug("Obtained event = {}", event);
+
+        try {
+            return Optional.of((0 < userRepository.findJoinedUserEvent(event, user))).orElse(false);
+        } catch (DataAccessException e) {
+            log.error("Failed to retrieve joined user {} to event {}", user, event, e);
+            throw new ServiceException("Failed to retrieve joined user to event ", e);
+        }
+
+    }
+
+
+    public void addEventUser(User user, Long id) {
+
+        log.debug("Obtained event id= {}", id);
+        log.debug("Obtained user = {}", user);
+
+        try {
+            userRepository.addUserEvent(user.getId(), id);
+        } catch (DataAccessException e) {
+            log.error("Failed to joining event for user {}", user, e);
+            throw new ServiceException("Failed to joining event for user ", e);
+        }
+    }
+    public void deleteEventUser(User user, Long eventId) {
+
+        log.debug("Obtained event id= {}", eventId);
+        log.debug("Obtained user = {}", user);
+
+        try {
+            userRepository.deleteUserEvent(user.getId(), eventId);
+        } catch (DataAccessException e) {
+            log.error("Failed to delete event for user {}", user, e);
+            throw new ServiceException("Failed to delete event for user ", e);
+        }
+    }
+
+    public List<User> getEventsByUser(Event event) {
+        log.debug("Obtained event = {}", event);
+
+        List<User> users;
+        try {
+            users = userRepository.findUsersByEvent(event);
+        } catch (DataAccessException e) {
+            log.error("Failed to retrieve users for event {}", event, e);
+            throw new ServiceException("Failed to retrieve users for event ", e);
+        }
+        return users;
+    }
+
     public User getById(long id) {
         log.debug("Trying to get user with id={}", id);
 
@@ -175,6 +245,27 @@ public class UserService implements UserDetailsService {
         } catch (DataAccessException e) {
             log.error("Failed to retrieve user with id={}", id, e);
             throw new ServiceException("Failed to retrieve user with such id", e);
+        }
+        return user;
+    }
+
+    public User getUserByEmail(String email) {
+        log.debug("Trying to get user with email={}", email);
+
+        if (email.isEmpty() || email == null) {
+            log.warn(MISSING_EMAIL_ERROR_MESSAGE);
+            throw new ServiceException(MISSING_EMAIL_ERROR_MESSAGE);
+        }
+        User user;
+        try {
+            user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new NoSuchEntityException("Invalid user email"));
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("Not existing event with id={}", email);
+            throw new NoSuchEntityException(NOT_EXIST_ENTITY);
+        } catch (DataAccessException e) {
+            log.error("Failed to retrieve user with email={}", email, e);
+            throw new ServiceException("Failed to retrieve user with such email", e);
         }
         return user;
     }

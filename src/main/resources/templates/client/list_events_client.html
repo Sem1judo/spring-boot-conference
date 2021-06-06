@@ -11,15 +11,12 @@
 <body>
 
 <th:block th:insert="fragments/header :: header"></th:block>
-
-<h3><a href="/createEventForm">Add a new event</a></h3>
-<a th:href="@{'/events/?sort=id&pageNumber='+${events.paging.pageNumber}}"> ID </a>|
-<a th:href="@{'/events/?sort=title&pageNumber='+${events.paging.pageNumber}}"> Title </a>|
-<a th:href="@{'/events/?sort=location&pageNumber='+${events.paging.pageNumber}}"> Location </a>|
-<a th:href="@{'/events/?sort=startTime&pageNumber='+${events.paging.pageNumber}}"> StartTime </a>|
-<a th:href="@{'/events/?sort=topics&pageNumber='+${events.paging.pageNumber}}"> Topics</a>
+<a th:href="@{'/list_events_client/?sort=id'}"> ID |</a>
+<a th:href="@{'/list_events_client/?sort=title'}"> Title |</a>
+<a th:href="@{'/list_events_client/?sort=location'}"> Location |</a>
+<a th:href="@{'/list_events_client/?sort=startTime'}"> StartTime |</a>
+<a th:href="@{'/list_events_client/?sort=topics'}"> Topics</a>
 <table class="table table-striped">
-
     <thead>
     <tr>
         <th scope="col">ID</th>
@@ -29,9 +26,8 @@
         <th scope="col">Start</th>
         <th scope="col">End</th>
         <th scope="col">Status</th>
+        <th scope="col">Attendance</th>
         <th scope="col">Participants</th>
-        <th scope="col">Edit</th>
-        <th scope="col">Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -46,22 +42,22 @@
         <td th:text="${#temporals.format(event.startTime, 'dd-MM-yyyy, HH:mm')}"/>
         <td th:text="${#temporals.format(event.endTime, 'dd-MM-yyyy, HH:mm')}"/>
         <td th:text="${event.status}"/>
+        <td th:text="${@userService.isJoinedUserEvent(event,@userController.getCurrentUser())} ? 'Joined' : 'Not join by now'">
         <td th:text="${event.topics.size()}"/>
-        <td><a th:href="@{/editEvent/{id}(id=${event.id})}">Edit</a></td>
-        <td><a th:href="@{/deleteEvent/{id}(id=${event.id})}">Delete</a></td>
+        </td>
     </tr>
     </tbody>
 </table>
 <nav aria-label="Page navigation" class="paging">
     <ul class="pagination" th:if="${events.page.totalPages > 1}">
         <li class="page-item" th:classappend="${!events.paging.isPrevEnabled()? 'disabled' : ''}">
-            <a class="page-link" th:href="@{'/events/?pageNumber=' + ${events.paging.pageNumber - 1}+'&sort='+${sort}}"
+            <a class="page-link" th:href="@{'/list_events_client/?pageNumber=' + ${events.paging.pageNumber - 1}}"
                tabindex="-1">Previous</a>
         </li>
         <th:block th:each="item : ${events.paging.getItems()}">
             <li class="page-item" th:classappend="${item.index == events.paging.pageNumber? 'active' : ''}"
                 th:if="${item.pageItemType.name() == 'PAGE'}">
-                <a class="page-link" th:href="@{'/events/?pageNumber=' + ${item.index}+'&sort='+${sort}}"
+                <a class="page-link" th:href="@{'/list_events_client/?pageNumber=' + ${item.index}}"
                    th:text="${item.index}"></a>
             </li>
             <li class="page-item disabled" th:if="${item.pageItemType.name() == 'DOTS'}">
@@ -69,7 +65,8 @@
             </li>
         </th:block>
         <li class="page-item" th:classappend="${!events.paging.isNextEnabled()? 'disabled' : ''}">
-            <a class="page-link" th:href="@{'/events/?pageNumber=' + ${events.paging.pageNumber + 1}+'&sort='+${sort}}">Next</a>
+            <a class="page-link"
+               th:href="@{'/list_events_client/?pageNumber=' + ${events.paging.pageNumber + 1}+'&sort='+${sort}}">Next</a>
         </li>
     </ul>
 </nav>

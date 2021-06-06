@@ -52,5 +52,8 @@ public class Topic  {
     @JoinColumn(name = "event_id")
     private Event event;
 
+    @Column
+    @Builder.Default
+    private boolean active = false;
 
 }

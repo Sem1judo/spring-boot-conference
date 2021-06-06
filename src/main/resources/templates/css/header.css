@@ -1,0 +1,36 @@
+.nav_header-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+.nav_link {
+    float: left;
+}
+
+.nav_link-right {
+    float: right;
+    color: white;
+}
+
+.nav-item {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 12px 12px;
+    text-decoration: none;
+    margin: 8px;
+}
+
+.nav-item:hover {
+    color: #fbc02d;
+    text-decoration: none;
+}
+
+
+.nav-item:hover:not(.active) {
+    background-color: #111;
+}
+

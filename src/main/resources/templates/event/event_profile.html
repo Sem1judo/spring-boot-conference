@@ -22,10 +22,40 @@
                 <h3 th:text="${event.status}"/>
                 <h3 th:text="${event.organizer.firstName}"/>
                 <h3 th:text="${event.organizer.lastName}"/>
+                <td th:switch="${@userService.isJoinedUserEvent(event,@userController.getCurrentUser())}">
+                    <a th:case="${true}" th:href="@{/unJoinEvent/{id}(id=${event.id})}">Un join</a>
+                    <a th:case="${false}" th:href="@{/joinEvent/{id}(id=${event.id})}">Join</a>
+                </td>
 
-                <h5><a th:href="@{/events}">Back to events </a></h5>
             </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Event title</th>
+                    <th scope="col">Speaker email</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${event.topics == null or event.topics.isEmpty()}">
+                    <td colspan="2">No topics</td>
+                </tr>
+                <tr th:each="topic : ${event.topics}" th:if="${topic.active}">
+                    <td th:text="${topic.id}"/>
+                    <td><a th:href="@{/topicProfile/{id}(id=${topic.id})}" th:text="${topic.name}"></a></td>
+                    <td th:text="${topic.description}"/>
+                    <td th:text="${topic.event.title}"/>
+                    <td th:text="${topic.user.email}"/>
+                    <td><a th:href="@{/editTopic/{id}(id=${topic.id})}">Edit</a></td>
+                    <td><a th:href="@{/deleteTopic/{id}(id=${topic.id})}">Delete</a></td>
+                </tr>
+                </tbody>
         </div>
+        <h5><a th:href="@{/events}">Back to events </a></h5>
         <div th:unless="${event}">
             <h3>No such id</h3>
         </div>

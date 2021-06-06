@@ -2,18 +2,54 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Spring Boot User Authentication</title>
+
+    <meta charset="utf-8">
+    <title>Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
 </head>
-<body>
 
-<form role="form" th:action="@{/sign-in}" th:method="post">
-    <lable>Username</lable>
-    <input type="text" id="username" name="username">
+<body class=" bg-warning">
+
+<div class="container w-25 my-3">
+    <div class=" card d-block border-0 ">
+        <form th:action="@{/sign-in}" action="controller" method="post">
+            <div class="card-header bg-dark text-light">
+                <h2 class="text-uppercase font-weight-bold text-center">Login</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-header mx-0">
+                </div>
+                <div class="form-group">
+                    <label for="username">Email</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+            </div>
+            <div class="text-center form-group">Register
+                <h4 class="text-uppercase font-weight-bold text-center">
+                    <a th:href="@{/sign-up}" class="link-dark">Register now</a>
+                </h4>
+            </div>
+            <div class="card-footer text-center ">
+                <button type="submit"
+                        class="btn btn-dark btn-lg">Login
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 
-    <lable>Password</lable>
-    <input type="password" id="password" name="password">
-
-    <input type="submit">
-</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </body>
 </html>

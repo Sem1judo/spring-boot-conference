@@ -96,7 +96,7 @@ public class TopicController {
                                     @RequestParam long userId,
                                     @RequestParam long eventId) {
 
-        ModelAndView mav = new ModelAndView("redirect:/" + "topics");
+        ModelAndView mav = new ModelAndView("redirect:/" + "editTopic/" + id);
 
         if (bindingResult.hasErrors()) {
             mav.setViewName("topic/updateTopicForm");
@@ -105,6 +105,16 @@ public class TopicController {
             mav.addObject("topics", topicService.getAll());
         }
 
+        return mav;
+    }
+
+
+    @GetMapping("/notActiveTopics")
+    public ModelAndView list_events_client(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                                           @RequestParam(value = "size", required = false, defaultValue = "5") int size) {
+        ModelAndView mav = new ModelAndView("moderator/moderatorProfile");
+
+        mav.addObject("topics", topicService.getPage(pageNumber, size));
         return mav;
     }
 

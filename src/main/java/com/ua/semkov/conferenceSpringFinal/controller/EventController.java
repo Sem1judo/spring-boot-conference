@@ -5,8 +5,6 @@ import com.ua.semkov.conferenceSpringFinal.entity.Event;
 import com.ua.semkov.conferenceSpringFinal.service.EventService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +22,27 @@ public class EventController {
     private final EventService eventServices;
 
     @GetMapping("/events")
-    public ModelAndView getAllEvents() {
+    public ModelAndView events(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                               @RequestParam(value = "size", required = false, defaultValue = "5") int size,
+                               @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
         ModelAndView mav = new ModelAndView("event/list_events");
 
-        mav.addObject("events", eventServices.getAll());
-
+        mav.addObject("events", eventServices.getPage(pageNumber, size, sort));
+        mav.addObject("sort", sort);
         return mav;
     }
+
+    @GetMapping("/list_events_client")
+    public ModelAndView list_events_client(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                                           @RequestParam(value = "size", required = false, defaultValue = "5") int size,
+                                           @RequestParam(value = "sort", required = false, defaultValue = "startTime") String sort) {
+        ModelAndView mav = new ModelAndView("client/list_events_client");
+
+        mav.addObject("sort", sort);
+        mav.addObject("events", eventServices.getPage(pageNumber, size, sort));
+        return mav;
+    }
+
 
     @GetMapping("/eventProfile/{id}")
     public ModelAndView getEvent(@PathVariable("id") Long id) {
@@ -47,7 +59,7 @@ public class EventController {
         ModelAndView mav = new ModelAndView("event/createEventForm");
 
         mav.addObject("event", new Event());
-// 2021-04-08, 12:30
+        // 2021-04-08, 12:30
         return mav;
     }
 

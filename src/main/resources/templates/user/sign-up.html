@@ -1,26 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Spring Boot User Authentication</title>
+    <title>Registration</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
 </head>
-<body>
+<body class=" bg-warning">
 
-<form role="form" th:action="@{/sign-up}" th:method="post" th:object="${user}">
-    <lable>Name</lable>
-    <input type="text" id="name" name="name" th:field="*{firstName}">
 
-    <lable>Surname</lable>
-    <input type="text" id="surname" name="surname" th:field="*{lastName}">
+<div class="container w-25 my-3">
+    <div class=" card d-block border-0 ">
+        <form th:action="@{/sign-up}" th:method="post" th:object="${user}">
 
-    <lable>Email</lable>
-    <input type="text" id="email" name="email" th:field="*{email}">
+            <div class="card-header bg-dark text-light">
+                <h2 class="text-uppercase font-weight-bold text-center">Registration</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-header mx-0">
+                </div>
 
-    <lable>Password</lable>
-    <input type="password" id="password" name="password" th:field="*{password}">
-    <lable>Password</lable>
-    <input type="number" name="eventId" id="eventId" value="2">
+                <div class="form-group">
+                    <label for="first_name">
+                        First name
+                    </label>
+                    <input type="text" class="form-control" id="first_name"
+                           name="first_name">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">
+                        Last name
+                    </label>
+                    <input type="text" class="form-control" id="last_name"
+                           name="last_name" th:field="*{lastName}">
 
-    <input type="submit">
-</form>
+                </div>
+                <div class="form-group">
+                    <label for="eventId">
+                        Id event
+                    </label>
+                    <input type="number" name="eventId"  class="form-control" id="eventId" >
+                </div>
+                <div class="form-group">
+                    <label for="email">
+                        Email
+                    </label>
+                    <input type="email" class="form-control" id="email"
+                           name="email" th:field="*{email}">
+
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        Password
+                    </label>
+                    <input type="password" class="form-control" id="password"
+                           name="password" th:field="*{password}">
+                </div>
+            </div>
+            <div class="card-footer text-center ">
+                <button type="submit"
+                        class="btn btn-dark btn-lg">
+                   Sign-up
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>

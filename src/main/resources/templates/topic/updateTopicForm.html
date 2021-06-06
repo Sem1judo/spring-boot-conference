@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <header th:insert="fragments/header :: header"></header>
@@ -36,7 +37,15 @@
         <input type="number" class="form-control"
                name="eventId" id="eventId" th:value="*{event.id}"/>
     </div>
-    <button type="submit" class="btn btn-primary">Update</button>
+    <div class="form-group">
+        <label for="pinned">Pinned</label>
+        <input type="radio" value="1"
+               name="active" id="pinned" th:checked="${topic.active}"/>
+        <label for="unpinned">Unpinned</label>
+        <input type="radio"  value="0"
+               id="unpinned" name="active" th:checked="${not topic.active}"/>
+    </div>
+    <button type="submit" class="btn btn-primary" th:attr="value=#{btn.confirm}">Update</button>
 </form>
 
 
