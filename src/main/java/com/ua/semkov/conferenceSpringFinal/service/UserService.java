@@ -66,13 +66,11 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public void signUpUser(User user, long eventId) {
+    public void signUpUser(User user) {
 
         final String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
 
         user.setPassword(encryptedPassword);
-
-        getEvent(user, eventId);
 
         final User createdUser = userRepository.save(user);
 
@@ -114,10 +112,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void create(User user, long eventId) {
+    public void create(User user) {
         log.debug("Trying to create user: {}", user);
 
-        getEvent(user, eventId);
         validator.validate(user);
         try {
             userRepository.save(user);
@@ -190,18 +187,19 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public void addEventUser(User user, Long id) {
+    public void addEventUser(User user, Long eventId) {
 
-        log.debug("Obtained event id= {}", id);
+        log.debug("Obtained event id= {}", eventId);
         log.debug("Obtained user = {}", user);
 
         try {
-            userRepository.addUserEvent(user.getId(), id);
+            userRepository.addUserEvent(user.getId(), eventId);
         } catch (DataAccessException e) {
             log.error("Failed to joining event for user {}", user, e);
             throw new ServiceException("Failed to joining event for user ", e);
         }
     }
+
     public void deleteEventUser(User user, Long eventId) {
 
         log.debug("Obtained event id= {}", eventId);
@@ -215,18 +213,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<User> getEventsByUser(Event event) {
-        log.debug("Obtained event = {}", event);
-
-        List<User> users;
-        try {
-            users = userRepository.findUsersByEvent(event);
-        } catch (DataAccessException e) {
-            log.error("Failed to retrieve users for event {}", event, e);
-            throw new ServiceException("Failed to retrieve users for event ", e);
-        }
-        return users;
-    }
 
     public User getById(long id) {
         log.debug("Trying to get user with id={}", id);
@@ -252,7 +238,7 @@ public class UserService implements UserDetailsService {
     public User getUserByEmail(String email) {
         log.debug("Trying to get user with email={}", email);
 
-        if (email.isEmpty() || email == null) {
+        if (email.isEmpty()) {
             log.warn(MISSING_EMAIL_ERROR_MESSAGE);
             throw new ServiceException(MISSING_EMAIL_ERROR_MESSAGE);
         }
@@ -295,16 +281,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    private void getEvent(User user, long eventId) {
-        try {
-            Event event = eventRepository.findById(eventId)
-                    .orElseThrow(() -> new NoSuchEntityException("Invalid event ID"));
-            user.setEvent(event);
-        } catch (NoSuchEntityException e) {
-            log.error("Failed to retrieve cause invalid event ID: {}", eventId);
-            throw new ServiceException("Failed to retrieve event from such id: ", e);
-        }
-    }
 
 }
 

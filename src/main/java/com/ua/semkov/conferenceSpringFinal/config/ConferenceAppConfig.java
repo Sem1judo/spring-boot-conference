@@ -2,7 +2,9 @@ package com.ua.semkov.conferenceSpringFinal.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,9 +19,12 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.spring5.ISpringTemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -32,7 +37,6 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- *
  * @author Semkov.S
  */
 @Configuration
@@ -140,13 +144,31 @@ public class ConferenceAppConfig implements WebMvcConfigurer {
         return viewResolver;
     }
 
+    @Bean(name = "localeResolver")
+    public LocaleResolver getLocaleResolver()  {
+        CookieLocaleResolver resolver= new CookieLocaleResolver();
+        resolver.setCookieDomain("appLocaleCookie");
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**" )
-                .addResourceLocations("/resources/");
+        resolver.setCookieMaxAge(60*60);
+        return resolver;
     }
 
+    @Bean(name = "messageSource")
+    public MessageSource getMessageResource()  {
+        ReloadableResourceBundleMessageSource messageResource= new ReloadableResourceBundleMessageSource();
+
+        messageResource.setBasename("classpath:i18n/messages");
+        messageResource.setDefaultEncoding("UTF-8");
+        return messageResource;
+    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
+        localeInterceptor.setParamName("lang");
+
+
+        registry.addInterceptor(localeInterceptor).addPathPatterns("/*");
+    }
 
 
     @Bean
@@ -180,5 +202,6 @@ public class ConferenceAppConfig implements WebMvcConfigurer {
 
         return mailSender;
     }
+
 
 }

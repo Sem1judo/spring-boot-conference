@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <meta charset="UTF-8">
@@ -11,7 +12,7 @@
 <header th:insert="fragments/header :: header"></header>
 <h1>Form</h1>
 
-<form th:action="@{/addEvent}" th:object="${event}" method="post">
+<form th:action="@{/create/addEvent}" th:object="${event}" method="post">
 
     <div class="form-group">
         <input type="text" class="form-control" hidden
@@ -51,11 +52,6 @@
         <input type="text" class="form-control"
                id="endLesson" th:field="*{endTime}"/>
         <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}">Name Error</span>
-    </div>
-    <div class="form-group">
-        <label for="userId">User ID</label>
-        <input type="number" class="form-control"
-               name="userId" id="userId" value="1"/>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

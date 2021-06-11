@@ -3,6 +3,8 @@ package com.ua.semkov.conferenceSpringFinal.entity;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -68,10 +70,6 @@ public class Event {
     @NotNull
     private LocalDateTime endTime;
 
-    @OneToOne
-    @JoinColumn(name = "organizer_id")
-    private User organizer;
-
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Status status = Status.PLANNED;
@@ -81,7 +79,15 @@ public class Event {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Topic> topics = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "events")
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_events",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
     private List<User> users = new ArrayList<>();
+
+    @Column
+    private Long participants;
 
 }

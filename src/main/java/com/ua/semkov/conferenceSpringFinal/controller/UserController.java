@@ -40,11 +40,11 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    ModelAndView signUp(User user, @RequestParam("eventId") long eventId) {
+    ModelAndView signUp(User user) {
 
         ModelAndView mav = new ModelAndView("redirect:/sign-in");
 
-        userService.signUpUser(user, eventId);
+        userService.signUpUser(user);
 
         return mav;
     }

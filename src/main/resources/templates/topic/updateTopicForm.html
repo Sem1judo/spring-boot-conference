@@ -10,7 +10,7 @@
 <body>
 <header th:insert="fragments/header :: header"></header>
 
-<form th:action="@{/updateTopic/{id}(id=${topic.id})}" th:object="${topic}"
+<form th:action="@{/update/updateTopic/{id}(id=${topic.id})}" th:object="${topic}"
       method="post">
 
     <div class="form-group">

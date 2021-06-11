@@ -3,6 +3,8 @@ package com.ua.semkov.conferenceSpringFinal.entity;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -68,15 +70,7 @@ public class User implements UserDetails {
     @Builder.Default
     private LocalDateTime registrationDate = LocalDateTime.now();
 
-    @ManyToOne
-    @JoinColumn(name = "event_id")
-    private Event event;
-
-    @ManyToMany
-    @JoinTable(
-            name = "users_events",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
+    @ManyToMany( mappedBy = "users")
     private List<Event> events = new ArrayList<>();
 
     @Builder.Default

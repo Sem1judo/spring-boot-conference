@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>Header</title>
     <!--    <link rel="stylesheet" type="text/css" th:href="@{/css/header.css}">-->
@@ -34,10 +35,21 @@
             margin: 8px;
         }
 
+        .nav-item_lang {
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-item_lang:hover {
+            color: #fbc02d;
+            text-decoration: none;
+        }
+
         .nav-item:hover {
             color: #fbc02d;
             text-decoration: none;
         }
+
 
         .nav-item:hover:not(.active) {
             background-color: #111;
@@ -53,26 +65,40 @@
     </style>
 
     <li class="nav_link">
-        <a class="nav-item" th:href="@{/events}">Events</a>
+        <a class="nav-item" th:href="@{/events}" th:text="#{events}">Events</a>
     </li>
 
     <li class="nav_link">
-        <a class="nav-item" th:href="@{/topics}">Topics</a>
+        <a class="nav-item" th:href="@{/topics}" th:text="#{topics}">Topics</a>
     </li>
     <li class="nav_link">
-        <a class="nav-item" th:href="@{/userProfile/}">Profile</a>
+        <a class="nav-item" th:href="@{/userProfile/}" th:text="#{profile}">Profile</a>
     </li>
+    <!--    <li class="nav_link_right" style="color: white">-->
+    <!--        <span sec:authentication="name">Username </span>-->
+    <!--        <br>-->
+    <!--        <span sec:authentication="principal.authorities">Roles</span>-->
+    <!--    </li>-->
 
-    <li class="nav_link">
-        <a class="nav-item" th:href="@{/notActiveTopics/}">Topics to confirm</a>
-    </li>
+
+    <div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+        <li class="nav_link">
+            <a class="nav-item" th:href="@{/moderator/notActiveTopics/}" th:text="#{profileConfirm}">Topics to
+                confirm</a>
+        </li>
+    </div>
 
     <li class="nav_link-right">
         <a class="nav-item">
             <form th:action="@{/logout}" method="POST">
-                <input type="submit" value="Logout"/>
+                <input type="submit" th:value="#{auth.logout}"/>
             </form>
         </a>
+    </li>
+    <li class="nav_link-right">
+        <a class="nav-item_lang" th:href="@{''(lang=en)}" th:text="#{lang.eng}"></a> |
+        <a class="nav-item_lang" th:href="@{''(lang=uk)}" th:text="#{lang.uk}"></a> |
+        <a class="nav-item_lang" th:href="@{''(lang=ru)}" th:text="#{lang.ru}"></a>
     </li>
 </ul>
 </body>

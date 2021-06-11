@@ -1,16 +1,15 @@
 package com.ua.semkov.conferenceSpringFinal.service;
 
 import com.ua.semkov.conferenceSpringFinal.dao.EventRepository;
-import com.ua.semkov.conferenceSpringFinal.dao.UserRepository;
 import com.ua.semkov.conferenceSpringFinal.entity.Event;
 import com.ua.semkov.conferenceSpringFinal.entity.Paged;
 import com.ua.semkov.conferenceSpringFinal.entity.Paging;
-import com.ua.semkov.conferenceSpringFinal.entity.User;
+
 import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
 import com.ua.semkov.conferenceSpringFinal.validation.ValidatorEntity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.*;
@@ -18,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.ejb.NoSuchEntityException;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
+
 
 @Slf4j
 @Service
@@ -29,8 +28,6 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
-
-    private final UserRepository userRepository;
 
     private final ValidatorEntity<Event> validator;
 
@@ -41,28 +38,42 @@ public class EventService {
     public List<Event> getAll() {
         log.debug("Trying to get all events");
         try {
-            return (List<Event>) eventRepository.findAll();
+            List<Event> events = (List<Event>) eventRepository.findAll();
+            for (Event event : events) {
+                event.setParticipants((long) event.getTopics().size());
+            }
+            return events;
         } catch (EmptyResultDataAccessException e) {
             log.warn("Events is not exist");
-            throw new NoSuchEntityException("Doesn't exist such event");
+            throw new NoSuchEntityException(NOT_EXIST_ENTITY);
         } catch (DataAccessException e) {
             log.error("Failed to get all events", e);
             throw new ServiceException("Failed to get list of events", e);
         }
     }
 
-    public Paged<Event> getPage(int pageNumber, int size,String fieldSortName) {
+
+    public Paged<Event> getPage(int pageNumber, int size, String fieldSortName) {
         log.debug("Trying to get pageable events");
-        PageRequest request = PageRequest.of(pageNumber - 1, size, new Sort(Sort.Direction.ASC, fieldSortName));
+
+        Sort.Direction sortDirection;
+
+        if (fieldSortName.equals("participants")) {
+            sortDirection = Sort.Direction.DESC;
+        } else sortDirection = Sort.Direction.ASC;
+
+        var request = PageRequest.of(pageNumber - 1, size, new Sort(sortDirection, fieldSortName));
+
         Page<Event> postPage = eventRepository.findAll(request);
+
+        //set quantity of participants
+        postPage.get().forEach(event -> event.setParticipants((long) event.getTopics().size()));
+
         return new Paged<>(postPage, Paging.of(postPage.getTotalPages(), pageNumber, size));
     }
 
-    public void create(Event event, Long userId) {
+    public void create(Event event) {
         log.debug("Trying to create event: {}", event);
-        log.debug("Trying to get user byId with id: {}", userId);
-
-        getUser(event, userId);
 
         validator.validate(event);
         try {
@@ -130,16 +141,14 @@ public class EventService {
         return event;
     }
 
-    public void update(Event event, Long userId) {
+    public void update(Event event) {
         log.debug("Trying to update event: {}", event);
-        log.debug("Trying to get user byId with id: {}", userId);
+
 
         if (event.getId() == 0) {
             log.warn(MISSING_ID_ERROR_MESSAGE);
             throw new ServiceException(MISSING_ID_ERROR_MESSAGE);
         }
-
-        getUser(event, userId);
 
         validator.validate(event);
         try {
@@ -156,17 +165,6 @@ public class EventService {
         } catch (DataAccessException e) {
             log.error("Failed to update event: {}", event);
             throw new ServiceException("Problem with updating event");
-        }
-    }
-
-    private void getUser(Event event, long userId) {
-        try {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new NoSuchEntityException("Invalid user ID"));
-            event.setOrganizer(user);
-        } catch (NoSuchEntityException e) {
-            log.error("Failed to retrieve cause invalid user ID: {}", userId);
-            throw new ServiceException("Failed to retrieve user from such id: ", e);
         }
     }
 }

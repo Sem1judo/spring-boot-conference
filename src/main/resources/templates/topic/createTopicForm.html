@@ -10,7 +10,7 @@
 <header th:insert="fragments/header :: header"></header>
 <h1>Form</h1>
 
-<form th:action="@{/addTopic}" th:object="${topic}" method="post">
+<form th:action="@{/createTopic/addTopic}" th:object="${topic}" method="post">
 
     <div class="form-group">
         <input type="text" class="form-control" hidden

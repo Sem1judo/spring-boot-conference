@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <header th:insert="fragments/header :: header"></header>
 <div class="container-fluid well span6">
     <div class="row-fluid">
-
         <div class="span8" th:class="${event}">
             <div th:if="${event}">
                 <h2>Event : </h2>
@@ -20,13 +21,10 @@
                 <h3 th:text="${#temporals.format(event.startTime, 'dd-MM-yyyy, HH:mm')}"/>
                 <h3 th:text="${#temporals.format(event.endTime, 'dd-MM-yyyy, HH:mm')}"/>
                 <h3 th:text="${event.status}"/>
-                <h3 th:text="${event.organizer.firstName}"/>
-                <h3 th:text="${event.organizer.lastName}"/>
-                <td th:switch="${@userService.isJoinedUserEvent(event,@userController.getCurrentUser())}">
+                <h4 th:switch="${@userService.isJoinedUserEvent(event,@userController.getCurrentUser())}">
                     <a th:case="${true}" th:href="@{/unJoinEvent/{id}(id=${event.id})}">Un join</a>
                     <a th:case="${false}" th:href="@{/joinEvent/{id}(id=${event.id})}">Join</a>
-                </td>
-
+                </h4>
             </div>
             <table class="table table-striped">
                 <thead>
@@ -35,12 +33,16 @@
                     <th scope="col">Name</th>
                     <th scope="col">Description</th>
                     <th scope="col">Event title</th>
-                    <th scope="col">Speaker email</th>
-                    <th scope="col">Edit</th>
-                    <th scope="col">Delete</th>
+
+                    <div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+                        <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
+                    </div>
                 </tr>
                 </thead>
                 <tbody>
+                <h5><a th:href="@{/events}">Back to events </a></h5>
+                <h1>Topics </h1>
                 <tr th:if="${event.topics == null or event.topics.isEmpty()}">
                     <td colspan="2">No topics</td>
                 </tr>
@@ -50,16 +52,16 @@
                     <td th:text="${topic.description}"/>
                     <td th:text="${topic.event.title}"/>
                     <td th:text="${topic.user.email}"/>
-                    <td><a th:href="@{/editTopic/{id}(id=${topic.id})}">Edit</a></td>
-                    <td><a th:href="@{/deleteTopic/{id}(id=${topic.id})}">Delete</a></td>
+                    <div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+                        <td><a th:href="@{/update/editTopic/{id}(id=${topic.id})}">Edit</a></td>
+                        <td><a th:href="@{/deleteTopic/{id}(id=${topic.id})}">Delete</a></td>
+                    </div>
                 </tr>
                 </tbody>
-        </div>
-        <h5><a th:href="@{/events}">Back to events </a></h5>
-        <div th:unless="${event}">
-            <h3>No such id</h3>
+            </table>
         </div>
     </div>
+</div>
 </div>
 </body>
 </html>

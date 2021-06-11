@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -12,12 +13,16 @@
 
 <th:block th:insert="fragments/header :: header"></th:block>
 
-<h3><a href="/createEventForm">Add a new event</a></h3>
+
+<div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+    <h3><a href="/create/createEventForm">Add a new event</a></h3>
+</div>
+
 <a th:href="@{'/events/?sort=id&pageNumber='+${events.paging.pageNumber}}"> ID </a>|
 <a th:href="@{'/events/?sort=title&pageNumber='+${events.paging.pageNumber}}"> Title </a>|
 <a th:href="@{'/events/?sort=location&pageNumber='+${events.paging.pageNumber}}"> Location </a>|
 <a th:href="@{'/events/?sort=startTime&pageNumber='+${events.paging.pageNumber}}"> StartTime </a>|
-<a th:href="@{'/events/?sort=topics&pageNumber='+${events.paging.pageNumber}}"> Topics</a>
+<a th:href="@{'/events/?sort=participants&pageNumber='+${events.paging.pageNumber}}"> Topics</a>
 <table class="table table-striped">
 
     <thead>
@@ -30,8 +35,10 @@
         <th scope="col">End</th>
         <th scope="col">Status</th>
         <th scope="col">Participants</th>
-        <th scope="col">Edit</th>
-        <th scope="col">Delete</th>
+        <div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </div>
     </tr>
     </thead>
     <tbody>
@@ -46,9 +53,15 @@
         <td th:text="${#temporals.format(event.startTime, 'dd-MM-yyyy, HH:mm')}"/>
         <td th:text="${#temporals.format(event.endTime, 'dd-MM-yyyy, HH:mm')}"/>
         <td th:text="${event.status}"/>
-        <td th:text="${event.topics.size()}"/>
-        <td><a th:href="@{/editEvent/{id}(id=${event.id})}">Edit</a></td>
-        <td><a th:href="@{/deleteEvent/{id}(id=${event.id})}">Delete</a></td>
+        <td th:text="${event.participants}"/>
+        <div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+            <td><a th:href="@{/update/editEvent/{id}(id=${event.id})}">Edit</a></td>
+            <td>
+                <form th:action="@{/delete/deleteEvent/{id}(id=${event.id})}" method="post">
+                    <button type="submit" value="Submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </div>
     </tr>
     </tbody>
 </table>
@@ -56,7 +69,7 @@
     <ul class="pagination" th:if="${events.page.totalPages > 1}">
         <li class="page-item" th:classappend="${!events.paging.isPrevEnabled()? 'disabled' : ''}">
             <a class="page-link" th:href="@{'/events/?pageNumber=' + ${events.paging.pageNumber - 1}+'&sort='+${sort}}"
-               tabindex="-1">Previous</a>
+               tabindex="-1" th:text="#{paging.previous}">Previous</a>
         </li>
         <th:block th:each="item : ${events.paging.getItems()}">
             <li class="page-item" th:classappend="${item.index == events.paging.pageNumber? 'active' : ''}"
@@ -69,11 +82,11 @@
             </li>
         </th:block>
         <li class="page-item" th:classappend="${!events.paging.isNextEnabled()? 'disabled' : ''}">
-            <a class="page-link" th:href="@{'/events/?pageNumber=' + ${events.paging.pageNumber + 1}+'&sort='+${sort}}">Next</a>
+            <a class="page-link" th:href="@{'/events/?pageNumber=' + ${events.paging.pageNumber + 1}+'&sort='+${sort}}" th:text="#{paging.next}">Next</a>
         </li>
     </ul>
 </nav>
-</div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>

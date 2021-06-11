@@ -50,7 +50,7 @@ public class TopicService {
     }
 
     public Paged<Topic> getPage(int pageNumber, int size) {
-        PageRequest request = PageRequest.of(pageNumber - 1, size, new Sort(Sort.Direction.ASC, "active"));
+        var request = PageRequest.of(pageNumber - 1, size, new Sort(Sort.Direction.ASC, "active"));
         Page<Topic> postPage = topicRepository.findAll(request);
         return new Paged<>(postPage, Paging.of(postPage.getTotalPages(), pageNumber, size));
     }

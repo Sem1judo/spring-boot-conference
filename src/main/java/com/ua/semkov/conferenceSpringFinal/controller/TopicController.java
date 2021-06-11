@@ -3,7 +3,11 @@ package com.ua.semkov.conferenceSpringFinal.controller;
 
 import com.ua.semkov.conferenceSpringFinal.entity.Event;
 import com.ua.semkov.conferenceSpringFinal.entity.Topic;
+import com.ua.semkov.conferenceSpringFinal.entity.User;
+import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
+import com.ua.semkov.conferenceSpringFinal.service.EventService;
 import com.ua.semkov.conferenceSpringFinal.service.TopicService;
+import com.ua.semkov.conferenceSpringFinal.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -11,7 +15,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import java.util.Optional;
 
 
 @Slf4j
@@ -19,13 +27,17 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class TopicController {
 
+    public static final String Path_REDIRECT = "redirect:/";
+    public static final String TOPICS = "topics";
     private final TopicService topicService;
+    private final UserService userService;
+    private final EventService eventService;
 
     @GetMapping("/topics")
     public ModelAndView getAllTopics() {
         ModelAndView mav = new ModelAndView("topic/list_topics");
 
-        mav.addObject("topics", topicService.getAll());
+        mav.addObject(TOPICS, topicService.getAll());
 
         return mav;
     }
@@ -40,7 +52,7 @@ public class TopicController {
     }
 
 
-    @GetMapping("/createTopicForm")
+    @GetMapping("/createTopic/createTopicForm")
     public ModelAndView createTopicForm() {
         ModelAndView mav = new ModelAndView("topic/createTopicForm");
 
@@ -49,35 +61,40 @@ public class TopicController {
         return mav;
     }
 
-    @PostMapping("/addTopic")
+    @PostMapping("/createTopic/addTopic")
     public ModelAndView addTopic(@ModelAttribute @Valid Topic topic,
                                  BindingResult bindingResult,
-                                 @RequestParam long userId,
-                                 @RequestParam long eventId) {
-        ModelAndView mav = new ModelAndView("redirect:/" + "topics");
+                                 @RequestParam @NotEmpty long userId,
+                                 @RequestParam @NotEmpty long eventId) {
+        ModelAndView mav = new ModelAndView(Path_REDIRECT + TOPICS);
+
+
+        User user = Optional.of(userService.getById(userId))
+                .orElseThrow(() -> new ServiceException("user don't exist"));
+        Event event = Optional.of(eventService.getById(eventId))
+                .orElseThrow(() -> new ServiceException("event don't exist"));
 
         if (bindingResult.hasErrors()) {
             mav.setViewName("topic/createTopicForm");
         } else {
-            topicService.create(topic, userId, eventId);
-            mav.addObject("topics", topicService.getAll());
+            topicService.create(topic, user.getId(), event.getId());
+            mav.addObject(TOPICS, topicService.getAll());
         }
         return mav;
     }
 
-    @GetMapping(value = "/deleteTopic/{id}")
-    public ModelAndView deleteTopic(@PathVariable("id") long id) {
+    @PostMapping(value = "/delete/deleteTopic/{id}")
+    public ModelAndView deleteTopic(@PathVariable("id") long id, HttpServletRequest request) {
 
-        ModelAndView mav = new ModelAndView("redirect:/" + "topics");
+        String referer = request.getHeader("Referer");
+        ModelAndView mav = new ModelAndView("redirect:" + referer);
 
         topicService.deleteById(id);
-
-        mav.addObject("topics", topicService.getAll());
 
         return mav;
     }
 
-    @GetMapping("/editTopic/{id}")
+    @GetMapping("/update/editTopic/{id}")
     public ModelAndView showUpdateForm(@PathVariable("id") Long topicId) {
 
         ModelAndView mav = new ModelAndView("topic/updateTopicForm");
@@ -89,32 +106,39 @@ public class TopicController {
         return mav;
     }
 
-    @PostMapping("/updateTopic/{id}")
+    @PostMapping("/update/updateTopic/{id}")
     public ModelAndView updateTopic(@PathVariable("id") Long id,
                                     @Valid Topic topic,
                                     BindingResult bindingResult,
                                     @RequestParam long userId,
                                     @RequestParam long eventId) {
 
-        ModelAndView mav = new ModelAndView("redirect:/" + "editTopic/" + id);
+        ModelAndView mav = new ModelAndView(Path_REDIRECT + "/update/editTopic/" + id);
+
+
+        User user = Optional.of(userService.getById(userId))
+                .orElseThrow(() -> new ServiceException("user don't exist"));
+        Event event = Optional.of(eventService.getById(eventId))
+                .orElseThrow(() -> new ServiceException("event don't exist"));
 
         if (bindingResult.hasErrors()) {
             mav.setViewName("topic/updateTopicForm");
+
         } else {
-            topicService.update(topic, userId, eventId);
-            mav.addObject("topics", topicService.getAll());
+            topicService.update(topic, user.getId(), event.getId());
+            mav.addObject(TOPICS, topicService.getAll());
         }
 
         return mav;
     }
 
 
-    @GetMapping("/notActiveTopics")
+    @GetMapping("/moderator/notActiveTopics")
     public ModelAndView list_events_client(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
                                            @RequestParam(value = "size", required = false, defaultValue = "5") int size) {
         ModelAndView mav = new ModelAndView("moderator/moderatorProfile");
 
-        mav.addObject("topics", topicService.getPage(pageNumber, size));
+        mav.addObject(TOPICS, topicService.getPage(pageNumber, size));
         return mav;
     }
 

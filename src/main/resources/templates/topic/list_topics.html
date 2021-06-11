@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 
 <header th:insert="fragments/header :: header"></header>
-<h3><a href="/createTopicForm">Add a new topic</a></h3>
-
+<div sec:authorize="hasAnyAuthority('ROLE_MODERATOR','ROLE_SPEAKER')">
+    <h3><a href="/createTopic/createTopicForm">Add a new topic</a></h3>
+</div>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -18,8 +21,10 @@
         <th scope="col">Description</th>
         <th scope="col">Event title</th>
         <th scope="col">Speaker email</th>
-        <th scope="col">Edit</th>
-        <th scope="col">Delete</th>
+        <div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </div>
     </tr>
     </thead>
     <tbody>
@@ -32,9 +37,16 @@
         <td th:text="${topic.description}"/>
         <td th:text="${topic.event.title}"/>
         <td th:text="${topic.user.email}"/>
-        <td><a th:href="@{/editTopic/{id}(id=${topic.id})}">Edit</a></td>
-        <td><a th:href="@{/deleteTopic/{id}(id=${topic.id})}">Delete</a></td>
+        <div sec:authorize="hasAnyAuthority('ROLE_MODERATOR')">
+            <td><a th:href="@{/update/editTopic/{id}(id=${topic.id})}">Edit</a></td>
+            <td>
+                <form th:action="@{/delete/deleteTopic/{id}(id=${topic.id})}" method="post">
+                    <button type="submit" value="Submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </div>
     </tr>
+
     </tbody>
 </table>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
