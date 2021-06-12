@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
@@ -82,7 +82,8 @@
             </li>
         </th:block>
         <li class="page-item" th:classappend="${!events.paging.isNextEnabled()? 'disabled' : ''}">
-            <a class="page-link" th:href="@{'/events/?pageNumber=' + ${events.paging.pageNumber + 1}+'&sort='+${sort}}" th:text="#{paging.next}">Next</a>
+            <a class="page-link" th:href="@{'/events/?pageNumber=' + ${events.paging.pageNumber + 1}+'&sort='+${sort}}"
+               th:text="#{paging.next}">Next</a>
         </li>
     </ul>
 </nav>

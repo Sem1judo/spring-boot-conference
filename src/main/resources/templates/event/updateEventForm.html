@@ -53,7 +53,7 @@
     <div class="form-group">
     <select name="status">
         <option th:each="status : ${T(com.ua.semkov.conferenceSpringFinal.entity.Status).values()}"
-                 th:value="${status}" th:text="${status}"></option>
+                 th:value="${status}" th:text="${status}" th:selected="${status}"></option>
     </select>
     </div>
 

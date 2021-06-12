@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -37,6 +38,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(unique = true)
+    @Email
     @NotBlank(message = "Email may not be blank")
     @Size(min = 2, max = 45,
             message = "Email must be between 2 and 45 characters long")

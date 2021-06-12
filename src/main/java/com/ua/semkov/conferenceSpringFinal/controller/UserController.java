@@ -1,6 +1,7 @@
 package com.ua.semkov.conferenceSpringFinal.controller;
 
 import com.ua.semkov.conferenceSpringFinal.entity.ConfirmationToken;
+import com.ua.semkov.conferenceSpringFinal.entity.Event;
 import com.ua.semkov.conferenceSpringFinal.entity.User;
 import com.ua.semkov.conferenceSpringFinal.service.ConfirmationTokenService;
 import com.ua.semkov.conferenceSpringFinal.service.UserService;
@@ -8,13 +9,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Optional;
 
 /**
@@ -30,22 +30,31 @@ public class UserController {
     private final ConfirmationTokenService confirmationTokenService;
 
     @GetMapping("/sign-in")
-    ModelAndView signIn() {
+    ModelAndView signIn(@RequestParam(value = "error", defaultValue = "false") boolean loginError) {
+
+
         return new ModelAndView("/user/sign-in");
     }
 
     @GetMapping("/sign-up")
-    ModelAndView signUpPage(User user) {
-        return new ModelAndView("/user/sign-up");
+    ModelAndView signUpPage() {
+        ModelAndView mav = new ModelAndView("user/sign-up");
+
+        mav.addObject("user", new User());
+        return mav;
     }
 
     @PostMapping("/sign-up")
-    ModelAndView signUp(User user) {
+    ModelAndView signUp(@ModelAttribute @Valid User user, BindingResult bindingResult) {
 
-        ModelAndView mav = new ModelAndView("redirect:/sign-in");
+        ModelAndView mav = new ModelAndView();
 
-        userService.signUpUser(user);
-
+        if (bindingResult.hasErrors()) {
+            mav.setViewName("user/sign-up");
+        } else {
+            userService.signUpUser(user);
+            mav.setViewName("redirect:/sign-in");
+        }
         return mav;
     }
 

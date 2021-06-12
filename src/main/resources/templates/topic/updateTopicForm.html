@@ -14,6 +14,9 @@
       method="post">
 
     <div class="form-group">
+        <div class="alert alert-danger" th:if="${#fields.hasErrors('global')}">
+            <span th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error"/>
+        </div>
         <label for="name">Title</label>
         <input type="text" class="form-control"
                id="name" th:field="*{name}"/>
@@ -26,25 +29,25 @@
                id="description" th:field="*{description}"/>
         <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</span>
     </div>
-
     <div class="form-group">
         <label for="userId">User ID</label>
         <input type="number" class="form-control"
-               name="userId" id="userId" th:value="*{user.id}"/>
+               name="userId" id="userId" th:value="${topic.user}? ${topic.user.id} : ${topicCopy?.user?.id}"/>
     </div>
     <div class="form-group">
         <label for="eventId">Event ID</label>
         <input type="number" class="form-control"
-               name="eventId" id="eventId" th:value="*{event.id}"/>
+               name="eventId" id="eventId" th:value="${topic.event}? ${topic.event.id} : ${topicCopy?.event?.id}"/>
     </div>
     <div class="form-group">
         <label for="pinned">Pinned</label>
         <input type="radio" value="1"
                name="active" id="pinned" th:checked="${topic.active}"/>
         <label for="unpinned">Unpinned</label>
-        <input type="radio"  value="0"
+        <input type="radio" value="0"
                id="unpinned" name="active" th:checked="${not topic.active}"/>
     </div>
+
     <button type="submit" class="btn btn-primary" th:attr="value=#{btn.confirm}">Update</button>
 </form>
 

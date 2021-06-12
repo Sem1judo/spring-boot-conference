@@ -25,6 +25,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.spring5.ISpringTemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -33,6 +34,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.sql.DataSource;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -144,30 +146,36 @@ public class ConferenceAppConfig implements WebMvcConfigurer {
         return viewResolver;
     }
 
-    @Bean(name = "localeResolver")
-    public LocaleResolver getLocaleResolver()  {
-        CookieLocaleResolver resolver= new CookieLocaleResolver();
-        resolver.setCookieDomain("appLocaleCookie");
-
-        resolver.setCookieMaxAge(60*60);
-        return resolver;
+    //    @Bean(name = "localeResolver")
+//    public LocaleResolver getLocaleResolver() {
+//        CookieLocaleResolver resolver = new CookieLocaleResolver();
+//        resolver.setCookieDomain("appLocaleCookie");
+//
+//        resolver.setCookieMaxAge(60 * 60);
+//        return resolver;
+//    }
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver slr = new SessionLocaleResolver();
+        slr.setDefaultLocale(Locale.US);
+        return slr;
     }
 
     @Bean(name = "messageSource")
-    public MessageSource getMessageResource()  {
-        ReloadableResourceBundleMessageSource messageResource= new ReloadableResourceBundleMessageSource();
+    public MessageSource getMessageResource() {
+        ReloadableResourceBundleMessageSource messageResource = new ReloadableResourceBundleMessageSource();
 
         messageResource.setBasename("classpath:i18n/messages");
         messageResource.setDefaultEncoding("UTF-8");
         return messageResource;
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
         localeInterceptor.setParamName("lang");
 
-
-        registry.addInterceptor(localeInterceptor).addPathPatterns("/*");
+        registry.addInterceptor(localeInterceptor);
     }
 
 

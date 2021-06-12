@@ -8,10 +8,14 @@ import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
 import com.ua.semkov.conferenceSpringFinal.service.EventService;
 import com.ua.semkov.conferenceSpringFinal.service.TopicService;
 import com.ua.semkov.conferenceSpringFinal.service.UserService;
+import com.ua.semkov.conferenceSpringFinal.validation.AbstractValidatorReference;
+import com.ua.semkov.conferenceSpringFinal.validation.ValidatorTopicEventId;
+import com.ua.semkov.conferenceSpringFinal.validation.ValidatorTopicUserId;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -32,6 +36,8 @@ public class TopicController {
     private final TopicService topicService;
     private final UserService userService;
     private final EventService eventService;
+    private final AbstractValidatorReference<User> validatorTopicUserId;
+    private final AbstractValidatorReference<Event> validatorTopicEventId;
 
     @GetMapping("/topics")
     public ModelAndView getAllTopics() {
@@ -64,20 +70,17 @@ public class TopicController {
     @PostMapping("/createTopic/addTopic")
     public ModelAndView addTopic(@ModelAttribute @Valid Topic topic,
                                  BindingResult bindingResult,
-                                 @RequestParam @NotEmpty long userId,
-                                 @RequestParam @NotEmpty long eventId) {
+                                 @RequestParam @NotEmpty String userId,
+                                 @RequestParam @NotEmpty String eventId) {
         ModelAndView mav = new ModelAndView(Path_REDIRECT + TOPICS);
 
 
-        User user = Optional.of(userService.getById(userId))
-                .orElseThrow(() -> new ServiceException("user don't exist"));
-        Event event = Optional.of(eventService.getById(eventId))
-                .orElseThrow(() -> new ServiceException("event don't exist"));
+        getGlobalError(bindingResult, userId, eventId);
 
         if (bindingResult.hasErrors()) {
             mav.setViewName("topic/createTopicForm");
         } else {
-            topicService.create(topic, user.getId(), event.getId());
+            topicService.create(topic, Long.parseLong(userId), Long.parseLong(eventId));
             mav.addObject(TOPICS, topicService.getAll());
         }
         return mav;
@@ -110,25 +113,23 @@ public class TopicController {
     public ModelAndView updateTopic(@PathVariable("id") Long id,
                                     @Valid Topic topic,
                                     BindingResult bindingResult,
-                                    @RequestParam long userId,
-                                    @RequestParam long eventId) {
+                                    @RequestParam String userId,
+                                    @RequestParam String eventId) {
 
-        ModelAndView mav = new ModelAndView(Path_REDIRECT + "/update/editTopic/" + id);
+        ModelAndView mav = new ModelAndView();
 
-
-        User user = Optional.of(userService.getById(userId))
-                .orElseThrow(() -> new ServiceException("user don't exist"));
-        Event event = Optional.of(eventService.getById(eventId))
-                .orElseThrow(() -> new ServiceException("event don't exist"));
+        getGlobalError(bindingResult, userId, eventId);
 
         if (bindingResult.hasErrors()) {
+            topic = topicService.getById(id);
             mav.setViewName("topic/updateTopicForm");
-
-        } else {
-            topicService.update(topic, user.getId(), event.getId());
-            mav.addObject(TOPICS, topicService.getAll());
+            mav.addObject("topicCopy", topic);
+            return mav;
         }
-
+        if (!bindingResult.hasErrors()) {
+            topicService.update(topic, Long.parseLong(userId), Long.parseLong(eventId));
+            mav.setViewName(Path_REDIRECT + "update/editTopic/" + id);
+        }
         return mav;
     }
 
@@ -140,6 +141,19 @@ public class TopicController {
 
         mav.addObject(TOPICS, topicService.getPage(pageNumber, size));
         return mav;
+    }
+
+    private void getGlobalError(BindingResult bindingResult, String userId, String eventId) {
+        String userIdErrorMessage = validatorTopicUserId.validateReference(userId);
+        String eventIdErrorMessage = validatorTopicEventId.validateReference(eventId);
+        if (!userIdErrorMessage.isEmpty()) {
+            ObjectError userIdError = new ObjectError("globalError", userIdErrorMessage);
+            bindingResult.addError(userIdError);
+        }
+        if (!eventIdErrorMessage.isEmpty()) {
+            ObjectError eventIdError = new ObjectError("globalError", eventIdErrorMessage);
+            bindingResult.addError(eventIdError);
+        }
     }
 
 }

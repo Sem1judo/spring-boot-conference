@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.ejb.NoSuchEntityException;
 import java.util.List;
 
+
 @Slf4j
 @Service
 @Transactional
@@ -30,11 +31,13 @@ public class TopicService {
 
     private final TopicRepository topicRepository;
 
+
     private final ValidatorEntity<Topic> validator;
 
 
     private static final String MISSING_ID_ERROR_MESSAGE = "Missing id topic.";
     private static final String NOT_EXIST_ENTITY = "Doesn't exist such topic";
+
 
     public List<Topic> getAll() {
         log.debug("Trying to get all topics");
