@@ -34,8 +34,6 @@ public class TopicController {
     public static final String Path_REDIRECT = "redirect:/";
     public static final String TOPICS = "topics";
     private final TopicService topicService;
-    private final UserService userService;
-    private final EventService eventService;
     private final AbstractValidatorReference<User> validatorTopicUserId;
     private final AbstractValidatorReference<Event> validatorTopicEventId;
 
@@ -88,6 +86,7 @@ public class TopicController {
 
     @PostMapping(value = "/delete/deleteTopic/{id}")
     public ModelAndView deleteTopic(@PathVariable("id") long id, HttpServletRequest request) {
+
 
         String referer = request.getHeader("Referer");
         ModelAndView mav = new ModelAndView("redirect:" + referer);

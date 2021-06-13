@@ -3,8 +3,6 @@ package com.ua.semkov.conferenceSpringFinal.entity;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -15,6 +13,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Event entity.
@@ -80,12 +79,8 @@ public class Event {
     private List<Topic> topics = new ArrayList<>();
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "users_events",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
-    private List<User> users = new ArrayList<>();
+    @OneToMany(mappedBy = "event")
+    private Set<UserEventRegistration> registrations;
 
     @Column
     private Long participants;

@@ -160,58 +160,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<Event> getEventsByUser(User user) {
-        log.debug("Obtained user = {}", user);
 
-        List<Event> events;
-        try {
-            events = eventRepository.findEventsByUsers(user);
-        } catch (DataAccessException e) {
-            log.error("Failed to retrieve events for user {}", user, e);
-            throw new ServiceException("Failed to retrieve events for user ", e);
-        }
-        return events;
-    }
-
-    public boolean isJoinedUserEvent(Event event, User user) {
-        log.debug("Obtained user = {}", user);
-        log.debug("Obtained event = {}", event);
-
-        try {
-            return Optional.of((0 < userRepository.findJoinedUserEvent(event, user))).orElse(false);
-        } catch (DataAccessException e) {
-            log.error("Failed to retrieve joined user {} to event {}", user, event, e);
-            throw new ServiceException("Failed to retrieve joined user to event ", e);
-        }
-
-    }
-
-
-    public void addEventUser(User user, Long eventId) {
-
-        log.debug("Obtained event id= {}", eventId);
-        log.debug("Obtained user = {}", user);
-
-        try {
-            userRepository.addUserEvent(user.getId(), eventId);
-        } catch (DataAccessException e) {
-            log.error("Failed to joining event for user {}", user, e);
-            throw new ServiceException("Failed to joining event for user ", e);
-        }
-    }
-
-    public void deleteEventUser(User user, Long eventId) {
-
-        log.debug("Obtained event id= {}", eventId);
-        log.debug("Obtained user = {}", user);
-
-        try {
-            userRepository.deleteUserEvent(user.getId(), eventId);
-        } catch (DataAccessException e) {
-            log.error("Failed to delete event for user {}", user, e);
-            throw new ServiceException("Failed to delete event for user ", e);
-        }
-    }
 
 
     public User getById(long id) {

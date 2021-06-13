@@ -3,8 +3,6 @@ package com.ua.semkov.conferenceSpringFinal.entity;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,10 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Semkov.S
@@ -27,7 +22,6 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users")
@@ -72,8 +66,9 @@ public class User implements UserDetails {
     @Builder.Default
     private LocalDateTime registrationDate = LocalDateTime.now();
 
-    @ManyToMany( mappedBy = "users")
-    private List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private Set<UserEventRegistration> registrations;
+
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

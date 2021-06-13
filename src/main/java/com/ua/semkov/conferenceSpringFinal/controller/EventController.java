@@ -19,8 +19,8 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class EventController {
 
-    public static final String EVENTS_ATTRIBUTE = "events";
-    public static final String EVENT_URL = "event";
+    public static final String EVENTS = "events";
+    public static final String EVENT = "event";
     private final EventService eventServices;
 
 
@@ -30,7 +30,7 @@ public class EventController {
                                @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
         ModelAndView mav = new ModelAndView("event/list_events");
 
-        mav.addObject(EVENTS_ATTRIBUTE, eventServices.getPage(pageNumber, size, sort));
+        mav.addObject(EVENTS, eventServices.getPage(pageNumber, size, sort));
         mav.addObject("sort", sort);
         return mav;
     }
@@ -40,7 +40,7 @@ public class EventController {
     public ModelAndView getEvent(@PathVariable("id") Long id) {
         ModelAndView mav = new ModelAndView("/event/event_profile");
 
-        mav.addObject(EVENT_URL, eventServices.getById(id));
+        mav.addObject(EVENT, eventServices.getById(id));
 
         return mav;
     }
@@ -50,7 +50,7 @@ public class EventController {
     public ModelAndView createEventForm() {
         ModelAndView mav = new ModelAndView("event/createEventForm");
 
-        mav.addObject(EVENT_URL, new Event());
+        mav.addObject(EVENT, new Event());
         // 2021-04-08, 12:30
         return mav;
     }
@@ -58,13 +58,13 @@ public class EventController {
     @PostMapping("/create/addEvent")
     public ModelAndView addEvent(@ModelAttribute @Valid Event event,
                                  BindingResult bindingResult) {
-        ModelAndView mav = new ModelAndView("redirect:/" + EVENTS_ATTRIBUTE);
+        ModelAndView mav = new ModelAndView("redirect:/" + EVENTS);
 
         if (bindingResult.hasErrors()) {
             mav.setViewName("event/createEventForm");
         } else {
             eventServices.create(event);
-            mav.addObject(EVENTS_ATTRIBUTE, eventServices.getAll());
+            mav.addObject(EVENTS, eventServices.getAll());
         }
         return mav;
     }
@@ -72,11 +72,11 @@ public class EventController {
     @PostMapping(value = "/delete/deleteEvent/{id}")
     public ModelAndView deleteEvent(@PathVariable("id") long id) {
 
-        ModelAndView mav = new ModelAndView("redirect:/" + EVENTS_ATTRIBUTE);
+        ModelAndView mav = new ModelAndView("redirect:/" + EVENTS);
 
         eventServices.deleteById(id);
 
-        mav.addObject(EVENTS_ATTRIBUTE, eventServices.getAll());
+        mav.addObject(EVENTS, eventServices.getAll());
 
         return mav;
     }
@@ -88,7 +88,7 @@ public class EventController {
 
         Event event = eventServices.getById(eventId);
 
-        mav.addObject(EVENT_URL, event);
+        mav.addObject(EVENT, event);
 
         return mav;
     }
@@ -98,17 +98,18 @@ public class EventController {
                                     @Valid Event event,
                                     BindingResult bindingResult) {
 
-        ModelAndView mav = new ModelAndView("redirect:/" + EVENTS_ATTRIBUTE);
+        ModelAndView mav = new ModelAndView("redirect:/" + EVENTS);
 
         if (bindingResult.hasErrors()) {
             mav.setViewName("event/updateEventForm");
         } else {
             eventServices.update(event);
-            mav.addObject(EVENTS_ATTRIBUTE, eventServices.getAll());
+            mav.addObject(EVENTS, eventServices.getAll());
         }
 
         return mav;
     }
+
 
 
     // work with data (form) - input type - datetime-local

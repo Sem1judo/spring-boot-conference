@@ -4,6 +4,7 @@ import com.ua.semkov.conferenceSpringFinal.entity.ConfirmationToken;
 import com.ua.semkov.conferenceSpringFinal.entity.Event;
 import com.ua.semkov.conferenceSpringFinal.entity.User;
 import com.ua.semkov.conferenceSpringFinal.service.ConfirmationTokenService;
+import com.ua.semkov.conferenceSpringFinal.service.UserEventRegistrationService;
 import com.ua.semkov.conferenceSpringFinal.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final UserEventRegistrationService userEventService;
 
     private final ConfirmationTokenService confirmationTokenService;
 
@@ -77,51 +79,10 @@ public class UserController {
 
         User user = getCurrentUser();
 
-        mav.addObject("events", userService.getEventsByUser(user));
+        mav.addObject("events", userEventService.getEventsByUser(user));
         mav.addObject("user", user);
 
         return mav;
-    }
-
-    @GetMapping(value = "/deleteEventUser/{id}")
-    public ModelAndView deleteEventUser(@PathVariable("id") long id) {
-
-        ModelAndView mav = new ModelAndView("redirect:/" + "userProfile");
-
-        userService.deleteById(id);
-
-        return mav;
-    }
-
-
-    @GetMapping("/joinEvent/{id}")
-    public ModelAndView joinEvent(@PathVariable("id") Long eventId, HttpServletRequest request) {
-
-
-        String referer = request.getHeader("Referer");
-        ModelAndView mav = new ModelAndView("redirect:" + referer);
-
-        User user = getCurrentUser();
-        userService.addEventUser(user, eventId);
-
-        mav.addObject("events", userService.getEventsByUser(user));
-        return mav;
-
-    }
-
-    @GetMapping("/unJoinEvent/{id}")
-    public ModelAndView unJoinEvent(@PathVariable("id") Long eventId, HttpServletRequest request) {
-
-
-        String referer = request.getHeader("Referer");
-        ModelAndView mav = new ModelAndView("redirect:" + referer);
-
-        User user = getCurrentUser();
-        userService.deleteEventUser(user, eventId);
-
-        mav.addObject("events", userService.getEventsByUser(user));
-        return mav;
-
     }
 
     public User getCurrentUser() {

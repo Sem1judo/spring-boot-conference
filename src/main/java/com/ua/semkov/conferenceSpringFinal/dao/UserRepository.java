@@ -19,23 +19,4 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
-
-
-    @Query(value = "SELECT COUNT(*) FROM users_events WHERE event_id =?1 and user_id = ?2", nativeQuery = true)
-    int findJoinedUserEvent(Event event, User user);
-
-
-    @Transactional
-    @Modifying
-    @Query(value = "INSERT INTO users_events (user_id, event_id) " +
-            "SELECT u.id,  e.id  FROM users u , events e " +
-            "WHERE u.id = ?1 AND e.id = ?2", nativeQuery = true)
-    void addUserEvent(Long userId, Long eventId);
-
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM users_events where user_id=?1 and  event_id = ?2", nativeQuery = true)
-    void deleteUserEvent(Long userId, Long eventId);
-
-
 }

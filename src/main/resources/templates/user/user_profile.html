@@ -490,7 +490,9 @@
                         </div>
                         <ul class=" nav-stacked">
                             <li>
-                                <a th:href="@{/unJoinEvent/{id}(id=${event.id})}">Leave <i class="fa fa-times"></i></a>
+                                <form th:action="@{/unJoinEvent/{id}(id=${event.id})}" method="post">
+                                    <button type="submit" value="Submit" class="btn btn-danger">Leave</button>
+                                </form>
                             </li>
                         </ul>
                     </div>
