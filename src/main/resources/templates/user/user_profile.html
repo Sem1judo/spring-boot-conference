@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <title>Profile</title>
@@ -436,7 +437,13 @@
             </div>
             <div class="panel">
                 <div class="bio-graph-heading">
-                    Some text
+
+                    <div sec:authorize="isAuthenticated()">
+                        Welcome <b><span sec:authentication="name">Username</span></b>
+                        &nbsp;
+                        <i><span sec:authentication="principal.authorities">Roles</span></i>
+                    </div>
+
                 </div>
                 <div class="panel-body bio-graph-info">
                     <h1>
