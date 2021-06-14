@@ -420,8 +420,8 @@
                         Quantity events
                         <span class="label label-warning pull-right r-activity"
                               th:text="${events.size()}"> </span></a></li>
-                    <li><a href="#"> <i class="fa fa-edit"></i>
-                        edit
+                    <li><a th:href="@{/update/editUser/{id}(id=${user.id})}">Edit profile
+                        <i class="fa fa-edit"></i>
                     </a></li>
                 </ul>
             </div>

@@ -25,7 +25,7 @@ public class EventController {
 
 
     @GetMapping("/events")
-    public ModelAndView events(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+    public ModelAndView getEvents(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
                                @RequestParam(value = "size", required = false, defaultValue = "5") int size,
                                @RequestParam(value = "sort", required = false, defaultValue = "id") String sort) {
         ModelAndView mav = new ModelAndView("event/list_events");
@@ -63,6 +63,7 @@ public class EventController {
         if (bindingResult.hasErrors()) {
             mav.setViewName("event/createEventForm");
         } else {
+
             eventServices.create(event);
             mav.addObject(EVENTS, eventServices.getAll());
         }
@@ -109,24 +110,5 @@ public class EventController {
 
         return mav;
     }
-
-
-
-    // work with data (form) - input type - datetime-local
-//    @InitBinder
-//    protected void initBinder(WebDataBinder binder) {
-//        binder.registerCustomEditor(LocalDateTime.class, new PropertyEditorSupport() {
-//            @Override
-//            public void setAsText(String text) throws IllegalArgumentException{
-//                setValue(LocalDateTime.parse(text.replace("T",", "), DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm")));
-//            }
-//
-//            @Override
-//            public String getAsText() throws IllegalArgumentException {
-//                return DateTimeFormatter.ofPattern("yyyy-MM-dd, HH:mm").format((LocalDateTime) getValue());
-//            }
-//        });
-//    }
-
 }
 

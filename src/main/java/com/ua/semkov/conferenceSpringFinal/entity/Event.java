@@ -60,12 +60,12 @@ public class Event {
     private String location;
 
     @Column
-    @DateTimeFormat(pattern = "yyyy-MM-dd, HH:mm")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @NotNull
     private LocalDateTime startTime;
 
     @Column
-    @DateTimeFormat(pattern = "yyyy-MM-dd, HH:mm")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @NotNull
     private LocalDateTime endTime;
 

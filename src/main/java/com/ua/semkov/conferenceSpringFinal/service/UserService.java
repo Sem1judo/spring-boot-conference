@@ -72,7 +72,7 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(encryptedPassword);
 
-        final User createdUser = userRepository.save(user);
+        final User createdUser = create(user);
 
         final ConfirmationToken confirmationToken = new ConfirmationToken(user);
 
@@ -89,6 +89,8 @@ public class UserService implements UserDetailsService {
         user.setEnabled(true);
 
         userRepository.save(user);
+
+        log.debug("User was confirmed: {}", user);
 
         confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
 
@@ -112,16 +114,17 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void create(User user) {
+    public User create(User user) {
         log.debug("Trying to create user: {}", user);
 
         validator.validate(user);
         try {
-            userRepository.save(user);
+            user = userRepository.save(user);
         } catch (DataAccessException e) {
             log.error("Failed to create user: {}", user, e);
             throw new ServiceException("Failed to create user", e);
         }
+        return user;
     }
 
 
@@ -159,8 +162,6 @@ public class UserService implements UserDetailsService {
             throw new ServiceException("Failed to delete user", e);
         }
     }
-
-
 
 
     public User getById(long id) {
@@ -212,6 +213,11 @@ public class UserService implements UserDetailsService {
             log.warn(MISSING_ID_ERROR_MESSAGE);
             throw new ServiceException(MISSING_ID_ERROR_MESSAGE);
         }
+
+        final String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+
+        user.setPassword(encryptedPassword);
+
         validator.validate(user);
         try {
             userRepository.findById(user.getId());

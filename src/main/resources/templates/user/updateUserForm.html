@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Update user</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+</head>
+<body class=" bg-warning">
+
+<div class="container w-25 my-3">
+    <div class=" card d-block border-0 ">
+        <form th:action="@{/update/updateUser/{id}(id=${user.id})}" th:method="post" th:object="${user}">
+
+            <div class="card-header bg-dark text-light">
+                <h2 class="text-uppercase font-weight-bold text-center">Personal info</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-header mx-0">
+                    <div class="form-group">
+                        <label for="first_name">First name</label>
+                        <input type="text" class="form-control"
+                               id="first_name" th:field="*{firstName}"/>
+                        <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Name Error</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last name</label>
+                        <input type="text" class="form-control"
+                               id="lastName" th:field="*{lastName}"/>
+                        <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Name Error</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control"
+                               id="email" th:field="*{email}"/>
+                        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Name Error</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control"
+                               id="password" th:field="*{password}"/>
+                        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name Error</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center ">
+                <button type="submit"
+                        class="btn btn-dark btn-lg">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+</body>
+</html>

@@ -72,6 +72,36 @@ public class UserController {
         return mav;
     }
 
+    @GetMapping("/update/editUser/{id}")
+    public ModelAndView showUpdateForm(@PathVariable("id") Long userId) {
+
+        ModelAndView mav = new ModelAndView("/user/updateUserForm");
+
+        User user = userService.getById(userId);
+
+        mav.addObject("user", user);
+
+        return mav;
+    }
+
+    @PostMapping("/update/updateUser/{id}")
+    public ModelAndView updateEvent(@PathVariable("id") Long id,
+                                    @Valid User user,
+                                    BindingResult bindingResult) {
+
+        ModelAndView mav = new ModelAndView("redirect:/" + "userProfile");
+
+        if (bindingResult.hasErrors()) {
+            mav.setViewName("/user/updateUserForm");
+        } else {
+            userService.update(user);
+            mav.addObject("events", userEventService.getEventsByUser(user));
+            mav.addObject("user", user);
+        }
+
+        return mav;
+    }
+
 
     @GetMapping("/userProfile")
     public ModelAndView getEvent() {

@@ -2,8 +2,8 @@ package com.ua.semkov.conferenceSpringFinal.service;
 
 import com.ua.semkov.conferenceSpringFinal.dao.EventRepository;
 import com.ua.semkov.conferenceSpringFinal.entity.Event;
-import com.ua.semkov.conferenceSpringFinal.entity.Paged;
-import com.ua.semkov.conferenceSpringFinal.entity.Paging;
+import com.ua.semkov.conferenceSpringFinal.entity.paging.Paged;
+import com.ua.semkov.conferenceSpringFinal.entity.paging.Paging;
 
 import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
 import com.ua.semkov.conferenceSpringFinal.validation.ValidatorEntity;

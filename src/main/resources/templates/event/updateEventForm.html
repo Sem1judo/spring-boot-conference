@@ -38,14 +38,14 @@
 
     <div class="form-group">
         <label for="startTime">Start Time</label>
-        <input type="text" class="form-control"
+        <input type="datetime-local" class="form-control"
                id="startTime" th:field="*{startTime}"/>
         <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}">Name Error</span>
     </div>
 
     <div class="form-group">
         <label for="endTime">End Time</label>
-        <input type="text" class="form-control"
+        <input type="datetime-local" class="form-control"
                id="endTime" th:field="*{endTime}"/>
         <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}">Name Error</span>
 

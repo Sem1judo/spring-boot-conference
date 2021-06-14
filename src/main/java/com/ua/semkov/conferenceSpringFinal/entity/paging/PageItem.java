@@ -1,4 +1,4 @@
-package com.ua.semkov.conferenceSpringFinal.entity;
+package com.ua.semkov.conferenceSpringFinal.entity.paging;
 
 import lombok.*;
 

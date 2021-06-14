@@ -4,6 +4,8 @@ import com.ua.semkov.conferenceSpringFinal.dao.EventRepository;
 import com.ua.semkov.conferenceSpringFinal.dao.TopicRepository;
 import com.ua.semkov.conferenceSpringFinal.dao.UserRepository;
 import com.ua.semkov.conferenceSpringFinal.entity.*;
+import com.ua.semkov.conferenceSpringFinal.entity.paging.Paged;
+import com.ua.semkov.conferenceSpringFinal.entity.paging.Paging;
 import com.ua.semkov.conferenceSpringFinal.exceptions.ServiceException;
 import com.ua.semkov.conferenceSpringFinal.validation.ValidatorEntity;
 import lombok.AllArgsConstructor;
